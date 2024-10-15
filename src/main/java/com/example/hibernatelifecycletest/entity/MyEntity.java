@@ -1,4 +1,4 @@
-package com.example.hibernatelifecycletest.domain;
+package com.example.hibernatelifecycletest.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,10 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Entity
-@Getter
-@Setter
-@ToString
+@Entity @Getter @Setter @ToString
 public class MyEntity {
 
     @Id
