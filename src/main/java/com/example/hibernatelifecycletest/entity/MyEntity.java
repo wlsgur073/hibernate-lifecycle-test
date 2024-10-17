@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MyEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
