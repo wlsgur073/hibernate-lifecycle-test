@@ -18,6 +18,16 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
+/**
+ * ConcurrentTest class:
+ * <p>
+ * These two test cases, when run simultaneously, are expected to cause a transaction conflict.
+ * This is an intentional test to simulate concurrent access and validate how the system handles
+ * transaction collisions.
+ * <p>
+ * Running these tests individually will pass, but running them concurrently will cause a
+ * transaction collision, which is the expected behavior and not a test failure.
+ */
 public class ConcurrentTest {
 
     @Test
@@ -61,23 +71,24 @@ public class ConcurrentTest {
     }
 
     @Test
+    @DisplayName("Test concurrent updates using java.util.concurrent")
     public void testConcurrentUpdatesWithJavaUtilConcurrent() {
         doInTransaction(session -> {
             MyEntity entity = new MyEntity();
-            entity.setId(1L);
+            entity.setId(2L);
             entity.setName("First Name");
             session.persist(entity);
         });
 
         doInTransaction(session -> {
-            final MyEntity entity = session.get(MyEntity.class, 1L);
+            final MyEntity entity = session.get(MyEntity.class, 2L);
 
             // Using ExecutorService to handle concurrent processing
             ExecutorService executor = Executors.newFixedThreadPool(2);
             Future<?> future = executor.submit(() -> {
                 // Concurrently update MyEntity in a different thread
                 doInTransaction(_session -> {
-                    MyEntity otherThreadEntity = _session.get(MyEntity.class, 1L);
+                    MyEntity otherThreadEntity = _session.get(MyEntity.class, 2L);
                     assertNotSame(entity, otherThreadEntity);
                     otherThreadEntity.setName("Second Name");
                 });
